@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# ignore model2.py, api_key.py
+model2.py
+api_key.py
