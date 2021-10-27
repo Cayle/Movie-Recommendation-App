@@ -15,6 +15,9 @@ print(data['type'])
 print(data.groupby('type').count())
 data = data.dropna(subset=['cast', 'country', 'rating'])
 
+
+        
+
 """
 Developing the recommendation engine using cast, director, country
 rating, and genres.
