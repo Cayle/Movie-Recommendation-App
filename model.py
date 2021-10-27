@@ -16,9 +16,6 @@ print(data.groupby('type').count())
 data = data.dropna(subset=['cast', 'country', 'rating'])
 
 
-
-# def randomize():
-#     for i, row in data.iterrows():
         
 
 """
