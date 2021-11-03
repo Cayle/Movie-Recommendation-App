@@ -58,8 +58,29 @@ def status():
 """
 The above are just sample requests.
 """
+@app.route('/movie/<string:term>', methods=['GET'])
+def get_movie_details(term):
+	api_string = get_api_string_title(term)	
+	response = requests.get(api_string)
+	print(response.status_code)
+	response = response.json()
 
-@app.route('/movie/<string:search_term>', methods=['GET'])
+	show_response = response['results'][0] if len(response['results']) > 0 else {}
+
+	movie_id = show_response.get("id", 550)
+	movie_video_response = requests.get(get_api_string_video(str(movie_id)))
+	movie_video_response = movie_video_response.json()
+	movie_trailer_url = get_movie_url(movie_video_response)
+
+	description = show_response.get("overview", "")
+	poster_path = show_response.get("poster_path", "")
+	full_poster_path = IMAGE_PREFIX + poster_path if poster_path != "" else poster_path
+	release_date = show_response.get("release_date", "")
+
+	movie_details = {'title': term, 'description': description, 'poster_path': full_poster_path, 'release_date': release_date, 'trailer_url': movie_trailer_url}
+	return jsonify(movie_details)
+
+@app.route('/search_movie/<string:search_term>', methods=['GET'])
 def retrieve_recommendations(search_term):
 	recommendations = []
 	search_recommendations = recommender(search_term)

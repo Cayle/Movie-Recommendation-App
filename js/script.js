@@ -42,6 +42,9 @@ function generateEachMovie(movie) {
 	const colDiv = document.createElement("div");
 	colDiv.className = 'col s12 m6';
 
+	const detailsLink = document.createElement("a");
+	detailsLink.href = 'movie.html?name='+movie.title;
+
 	const cardDiv = document.createElement("div");
 	cardDiv.className = "card";
 
@@ -50,18 +53,19 @@ function generateEachMovie(movie) {
 	cardDivImg.className = "card-image waves-effect waves-block waves-light";
 	const img = document.createElement("img");
 	img.className = 'activator';
-	img.src = "images/xxx.jpeg";
+	img.src = movie.poster_image;
+	img.width  = 150;
+	img.height = 300;
 	cardDivImg.appendChild(img);
 
 	const cardContent = document.createElement("div");
 	cardContent.className = 'card-content';
 	const spanContent = document.createElement("span");
 	spanContent.className = "card-title activator grey-text text-darken-4";
-	spanContent.innerHTML = movie.title + '<i class="material-icons right">more_vert</i>'
-	const pContent = document.createElement("p");
-	pContent.innerHTML = '<a href="#">Watch trailer</a>';
+	spanContent.innerHTML = movie.title;
+
 	cardContent.appendChild(spanContent);
-	cardContent.appendChild(pContent);
+
 
 	const cardReveal = document.createElement("div");
 	cardReveal.className = "card-reveal";
@@ -73,9 +77,10 @@ function generateEachMovie(movie) {
 
 	cardDiv.appendChild(cardDivImg);
 	cardDiv.appendChild(cardContent);
-	cardDiv.appendChild(cardReveal);
 
-	colDiv.append(cardDiv);
+
+	detailsLink.appendChild(cardDiv);
+	colDiv.append(detailsLink);
 	return colDiv;
 }
 
@@ -87,13 +92,40 @@ function getEachMovieRow(movie_1, movie_2) {
 	return mainDiv;
 }
 
+const url = "http://172.18.3.15:5000";
+
 async function generateRandomMovies() {
-	const response = await fetch('http://172.20.10.5:105/random');
+	const response = await fetch(url+'/random');
 	const response_in_json = await response.json();
 	console.log(response_in_json);
 
 	const contentSection = document.getElementById("mainContent");
 	contentSection.appendChild(getEachMovieRow(response_in_json[0], response_in_json[1]));
 	contentSection.appendChild(getEachMovieRow(response_in_json[2], response_in_json[3]));
+	console.log("hey!!");
 }
+
+function getParam(){
+	const urlParams = new URLSearchParams(location.search);
+	var val;
+	for (const [key, value] of urlParams) {
+		val = value;
+		break;
+	}
+	console.log(val);
+	return val;
+}
+
+async function getAMovieDetail() {
+	const movie_name = getParam();
+	const response = await fetch(url+'/movie/'+movie_name);
+	const response_in_json = await response.json();
+	console.log(response_in_json);
+	document.getElementById("title").innerText = response_in_json.title;
+	document.getElementById("description").innerText = response_in_json.description;
+	document.getElementById("trailer_img").src = response_in_json.poster_path;
+	document.getElementById("trailer_link").href = response_in_json.trailer_url;
+}
+
+
 
